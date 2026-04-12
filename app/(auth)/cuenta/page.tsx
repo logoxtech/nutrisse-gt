@@ -70,8 +70,7 @@ export default function AccountPage() {
       });
       setProfile(prev => prev ? { ...prev, displayName: editName, phone: editPhone } : null);
       setSaveMessage("Perfil actualizado exitosamente.");
-    } catch (err) {
-      console.error(err);
+    } catch {
       setSaveMessage("Error al actualizar perfil.");
     } finally {
       setSavingProfile(false);
@@ -94,10 +93,11 @@ export default function AccountPage() {
     return <span className={`px-2 py-1 text-xs font-medium rounded-full ${s.color}`}>{s.label}</span>;
   };
 
-  const parseOrFormatDate = (dateField: any) => {
+  const parseOrFormatDate = (dateField: unknown) => {
     if (!dateField) return "Fecha desconocida";
-    if (dateField instanceof Timestamp || dateField.toDate) return dateField.toDate().toLocaleDateString();
-    return new Date(dateField).toLocaleDateString();
+    if (dateField instanceof Timestamp) return dateField.toDate().toLocaleDateString();
+    if (typeof dateField === "object" && dateField !== null && "toDate" in dateField) return (dateField as { toDate: () => Date }).toDate().toLocaleDateString();
+    return new Date(dateField as string | number).toLocaleDateString();
   };
 
   return (
@@ -219,7 +219,7 @@ export default function AccountPage() {
                         <label className="block text-sm font-medium text-nutrisse-charcoal mb-1">Correo Electrónico (No editable)</label>
                         <input 
                           type="email"
-                          value={profile?.email || currentUser.email || ""}
+                          value={profile?.email || currentUser?.email || ""}
                           disabled
                           className="w-full px-4 py-2 bg-stone-50 border border-stone-200 rounded-md text-stone-500 cursor-not-allowed"
                         />

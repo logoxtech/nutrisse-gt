@@ -63,7 +63,7 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       await createProfileResource(userCredential.user.uid, data.email, data.name);
       handleRedirect();
-    } catch (err: any) {
+    } catch {
       setError("Error al registrar. Es posible que el correo ya esté en uso o la contraseña sea debil.");
       setLoading(false);
     }
@@ -76,7 +76,7 @@ export default function RegisterPage() {
       const result = await signInWithPopup(auth, googleProvider);
       await createProfileResource(result.user.uid, result.user.email, result.user.displayName);
       handleRedirect();
-    } catch (err: any) {
+    } catch {
       setError("Error al registrarse con Google.");
       setLoading(false);
     }

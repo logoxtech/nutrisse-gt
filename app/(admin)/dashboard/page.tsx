@@ -133,7 +133,7 @@ export default function AdminDashboardPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="date" tick={{ fontSize: 11 }} interval={4} />
                 <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v: number) => [`Q ${v.toFixed(2)}`, "Ingresos"]} />
+                <Tooltip formatter={(v) => [`Q ${Number(v).toFixed(2)}`, "Ingresos"]} />
                 <Line type="monotone" dataKey="revenue" stroke="#7D9B76" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>

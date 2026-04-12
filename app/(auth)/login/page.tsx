@@ -6,7 +6,7 @@ import { auth, googleProvider } from "@/lib/firebase";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const loginSchema = z.object({
@@ -44,7 +44,7 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       handleRedirect();
-    } catch (err: any) {
+    } catch {
       setError("Credenciales inválidas. Por favor intenta de nuevo.");
       setLoading(false);
     }
@@ -56,7 +56,7 @@ export default function LoginPage() {
     try {
       await signInWithPopup(auth, googleProvider);
       handleRedirect();
-    } catch (err: any) {
+    } catch {
       setError("Error al iniciar sesión con Google.");
       setLoading(false);
     }
@@ -72,7 +72,7 @@ export default function LoginPage() {
       await sendPasswordResetEmail(auth, email);
       setResetMessage("Se ha enviado un correo para restablecer tu contraseña.");
       setError("");
-    } catch (err: any) {
+    } catch {
       setError("Error al enviar el correo. Verifica que el correo esté registrado.");
     }
   };

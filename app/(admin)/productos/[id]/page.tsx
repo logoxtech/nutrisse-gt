@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/firebase";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Category } from "@/lib/types";
@@ -28,7 +28,19 @@ const schema = z.object({
   active: z.boolean(),
 });
 
-type FormData = z.infer<typeof schema>;
+// Explicit interface avoids Zod v4 coerce.number() inferring `unknown`
+interface FormData {
+  name: string;
+  slug: string;
+  description: string;
+  longDescription?: string;
+  price: number;
+  comparePrice?: number | "";
+  categoryId: string;
+  stock: number;
+  featured: boolean;
+  active: boolean;
+}
 
 function generateSlug(name: string) {
   return name.toLowerCase().replace(/[áàä]/g, "a").replace(/[éèë]/g, "e")
@@ -50,7 +62,7 @@ export default function ProductFormPage() {
   const [dragging, setDragging] = useState(false);
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormData>,
     defaultValues: { active: true, featured: false, stock: 0 }
   });
 

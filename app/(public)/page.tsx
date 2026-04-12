@@ -146,7 +146,7 @@ export default function LandingPage() {
                     ★★★★★
                   </div>
                   <p className="text-stone-400 italic mb-8 flex-grow leading-relaxed">
-                    "[TESTIMONIO DEL CLIENTE] - Reemplazar con reseñas de 3 a 5 líneas sobre los resultados y la atención brindada."
+                    &ldquo;[TESTIMONIO DEL CLIENTE] - Reemplazar con reseñas de 3 a 5 líneas sobre los resultados y la atención brindada.&rdquo;
                   </p>
                   <p className="font-medium text-nutrisse-charcoal">- [NOMBRE CLIENTE]</p>
                 </div>

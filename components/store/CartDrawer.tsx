@@ -4,13 +4,12 @@ import { useCartStore } from "@/lib/store/cart";
 import { useAuth } from "@/lib/context/AuthContext";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function CartDrawer() {
   const { items, isOpen, setIsOpen, updateQuantity, removeItem } = useCartStore();
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const router = useRouter();
   
   // Hydration safeguard for Zustand and mounting
@@ -102,7 +101,7 @@ export default function CartDrawer() {
               <span className="font-bold text-lg text-nutrisse-charcoal">Q {subtotal.toFixed(2)}</span>
             </div>
             
-            {user ? (
+            {currentUser ? (
                <button 
                  onClick={() => {
                    setIsOpen(false);

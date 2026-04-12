@@ -7,7 +7,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { CheckCircle, AlertTriangle, MessageCircle, CalendarClock, Phone } from "lucide-react";
+import { CheckCircle, AlertTriangle, MessageCircle, CalendarClock } from "lucide-react";
 import Link from "next/link";
 
 const availableServices = [
