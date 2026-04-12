@@ -35,4 +35,9 @@ jobs:
         run: npm run build
 
       - name: Deploy to Firebase Hosting
-        run: npx firebase-tools deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }} --project nutrisse-gt
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_NUTRISSE_GT }}
+          projectId: nutrisse-gt
+          channelId: live
