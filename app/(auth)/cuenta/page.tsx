@@ -8,7 +8,7 @@ import { signOut } from "firebase/auth";
 import { Order, Appointment, User as UserType } from "@/lib/types";
 
 export default function AccountPage() {
-  const { currentUser } = useAuth();
+  const { currentUser, userRole, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<"pedidos" | "citas" | "perfil">("pedidos");
   
   const [orders, setOrders] = useState<Order[]>([]);
@@ -56,6 +56,12 @@ export default function AccountPage() {
 
     loadUserData();
   }, [currentUser]);
+
+  useEffect(() => {
+    if (!loading && userRole === 'admin') {
+      window.location.href = '/dashboard';
+    }
+  }, [userRole, loading]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
