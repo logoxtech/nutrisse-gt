@@ -44,15 +44,15 @@ export default function RegisterForm() {
       const docSnap = await getDoc(userDocRef);
       
       if (docSnap.exists() && docSnap.data().role === 'admin') {
-        router.push("/dashboard");
+        window.location.href = "/dashboard";
       } else if (redirectParams) {
-        router.push(redirectParams);
+        window.location.href = redirectParams;
       } else {
-        router.push("/cuenta");
+        window.location.href = "/cuenta";
       }
     } catch (error) {
       console.error("Error checking user role:", error);
-      router.push(redirectParams || "/cuenta");
+      window.location.href = redirectParams || "/cuenta";
     }
   };
 
