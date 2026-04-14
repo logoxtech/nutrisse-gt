@@ -7,7 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const loginSchema = z.object({
@@ -21,7 +21,7 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [resetMessage, setResetMessage] = useState("");
-  const router = useRouter();
+
   const searchParams = useSearchParams();
   const redirectParams = searchParams?.get('redirect');
 
@@ -36,6 +36,9 @@ export default function LoginForm() {
 
   const handleRedirect = async (uid: string) => {
     try {
+      // Wait for auth token to propagate to Firestore
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       const userDocRef = doc(db, "users", uid);
       const docSnap = await getDoc(userDocRef);
       
@@ -48,7 +51,19 @@ export default function LoginForm() {
       }
     } catch (error) {
       console.error("Error checking user role:", error);
-      window.location.href = redirectParams || "/cuenta";
+      // Retry once after another second
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const userDocRef = doc(db, "users", uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists() && docSnap.data().role === 'admin') {
+          window.location.href = "/dashboard";
+        } else {
+          window.location.href = redirectParams || "/cuenta";
+        }
+      } catch {
+        window.location.href = redirectParams || "/cuenta";
+      }
     }
   };
 
