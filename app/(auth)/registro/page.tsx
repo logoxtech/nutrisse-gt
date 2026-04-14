@@ -34,11 +34,21 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
   });
 
-  const handleRedirect = () => {
-    if (redirectParams) {
-      router.push(redirectParams);
-    } else {
-      router.push("/cuenta");
+  const handleRedirect = async (uid: string) => {
+    try {
+      const userDocRef = doc(db, "users", uid);
+      const docSnap = await getDoc(userDocRef);
+      
+      if (docSnap.exists() && docSnap.data().role === 'admin') {
+        router.push("/dashboard");
+      } else if (redirectParams) {
+        router.push(redirectParams);
+      } else {
+        router.push("/cuenta");
+      }
+    } catch (error) {
+      console.error("Error checking user role:", error);
+      router.push(redirectParams || "/cuenta");
     }
   };
 
@@ -62,7 +72,7 @@ export default function RegisterPage() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       await createProfileResource(userCredential.user.uid, data.email, data.name);
-      handleRedirect();
+      await handleRedirect(userCredential.user.uid);
     } catch {
       setError("Error al registrar. Es posible que el correo ya esté en uso o la contraseña sea debil.");
       setLoading(false);
@@ -75,7 +85,7 @@ export default function RegisterPage() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       await createProfileResource(result.user.uid, result.user.email, result.user.displayName);
-      handleRedirect();
+      await handleRedirect(result.user.uid);
     } catch {
       setError("Error al registrarse con Google.");
       setLoading(false);

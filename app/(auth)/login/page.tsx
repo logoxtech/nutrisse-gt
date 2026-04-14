@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase";
+import { auth, googleProvider, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -30,11 +31,21 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const handleRedirect = () => {
-    if (redirectParams) {
-      router.push(redirectParams);
-    } else {
-      router.push("/cuenta");
+  const handleRedirect = async (uid: string) => {
+    try {
+      const userDocRef = doc(db, "users", uid);
+      const docSnap = await getDoc(userDocRef);
+      
+      if (docSnap.exists() && docSnap.data().role === 'admin') {
+        router.push("/dashboard");
+      } else if (redirectParams) {
+        router.push(redirectParams);
+      } else {
+        router.push("/cuenta");
+      }
+    } catch (error) {
+      console.error("Error checking user role:", error);
+      router.push(redirectParams || "/cuenta");
     }
   };
 
@@ -42,8 +53,8 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      handleRedirect();
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      await handleRedirect(userCredential.user.uid);
     } catch {
       setError("Credenciales inválidas. Por favor intenta de nuevo.");
       setLoading(false);
@@ -54,8 +65,8 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      await signInWithPopup(auth, googleProvider);
-      handleRedirect();
+      const result = await signInWithPopup(auth, googleProvider);
+      await handleRedirect(result.user.uid);
     } catch {
       setError("Error al iniciar sesión con Google.");
       setLoading(false);
