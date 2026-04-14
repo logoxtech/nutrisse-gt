@@ -27,9 +27,14 @@ export default function LoginPage() {
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const redirectParams = searchParams?.get('redirect');
 
-  const { register, handleSubmit, formState: { errors }, getValues } = useForm<LoginForm>({
+  const { register, handleSubmit: hookFormSubmit, formState: { errors }, getValues } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    hookFormSubmit(onSubmit)(e);
+  };
 
   const handleRedirect = async (uid: string) => {
     try {
@@ -119,7 +124,7 @@ export default function LoginPage() {
           <div className="flex-grow border-t border-stone-200"></div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-nutrisse-charcoal mb-1">Correo Electrónico</label>
             <input 

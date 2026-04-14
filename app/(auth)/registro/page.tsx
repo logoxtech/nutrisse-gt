@@ -30,9 +30,14 @@ export default function RegisterPage() {
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const redirectParams = searchParams?.get('redirect');
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
+  const { register, handleSubmit: hookFormSubmit, formState: { errors } } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
   });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    hookFormSubmit(onSubmit)(e);
+  };
 
   const handleRedirect = async (uid: string) => {
     try {
@@ -122,7 +127,7 @@ export default function RegisterPage() {
           <div className="flex-grow border-t border-stone-200"></div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-nutrisse-charcoal mb-1">Nombre Completo</label>
             <input 
