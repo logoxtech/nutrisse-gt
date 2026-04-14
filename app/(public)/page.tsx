@@ -1,7 +1,7 @@
-"use client";
 
 import Link from "next/link";
 import { Camera, ArrowRight, ArrowDownToLine, Users, Heart, ClipboardList } from "lucide-react";
+import NewsletterForm from "@/components/home/NewsletterForm";
 
 export default function LandingPage() {
   return (
@@ -180,19 +180,7 @@ export default function LandingPage() {
             <h2 className="font-serif text-3xl md:text-4xl font-bold">Recibe una guía gratuita de suplementos</h2>
             <p className="text-white/80">Suscríbete a mi newsletter y recibe tips de nutrición funcional directamente en tu correo.</p>
             {/* // TODO: Connect to Mailchimp or n8n workflow for email list */}
-            <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto pt-4" onSubmit={(e) => { e.preventDefault(); }}>
-              <input 
-                type="email" 
-                placeholder="Tu correo electrónico" 
-                className="flex-grow px-4 py-3 rounded-md text-nutrisse-charcoal focus:outline-none focus:ring-2 focus:ring-white/50 border-0"
-              />
-              <button 
-                type="submit" 
-                className="px-6 py-3 bg-nutrisse-charcoal text-white rounded-md hover:bg-nutrisse-charcoal/90 transition font-medium whitespace-nowrap"
-              >
-                Suscribirme
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </section>
       </main>

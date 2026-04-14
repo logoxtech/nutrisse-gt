@@ -15,9 +15,12 @@ service cloud.firestore {
 
     // --- Users Collection ---
     match /users/{userId} {
-      allow read, update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      allow delete: if isAdmin();
+      // Users can always read and write their own document
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Admins can read and write any user document
+      allow read, write: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
     // --- Products Collection ---

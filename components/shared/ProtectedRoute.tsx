@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth, Role } from "@/lib/context/AuthContext";
+import { useAuth } from "@/lib/context/AuthContext";
+import type { Role } from "@/lib/types";
 
 export default function ProtectedRoute({ children, requiredRole }: { children: React.ReactNode, requiredRole?: Role }) {
   const { currentUser, userRole, loading } = useAuth();

@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
-import { auth, googleProvider, db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth, googleProvider } from "@/lib/firebase";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import GoogleIcon from "@/components/ui/GoogleIcon";
 
 const loginSchema = z.object({
   email: z.string().email("Correo electrónico inválido"),
@@ -34,45 +34,13 @@ export default function LoginForm() {
     hookFormSubmit(onSubmit)(e);
   };
 
-  const handleRedirect = async (uid: string) => {
-    try {
-      // Wait for auth token to propagate to Firestore
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const userDocRef = doc(db, "users", uid);
-      const docSnap = await getDoc(userDocRef);
-      
-      if (docSnap.exists() && docSnap.data().role === 'admin') {
-        window.location.href = "/dashboard";
-      } else if (redirectParams) {
-        window.location.href = redirectParams;
-      } else {
-        window.location.href = "/cuenta";
-      }
-    } catch (error) {
-      console.error("Error checking user role:", error);
-      // Retry once after another second
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const userDocRef = doc(db, "users", uid);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists() && docSnap.data().role === 'admin') {
-          window.location.href = "/dashboard";
-        } else {
-          window.location.href = redirectParams || "/cuenta";
-        }
-      } catch {
-        window.location.href = redirectParams || "/cuenta";
-      }
-    }
-  };
-
   const onSubmit = async (data: LoginFormValues) => {
     setLoading(true);
     setError("");
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-      await handleRedirect(userCredential.user.uid);
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      // AuthContext will update userRole — redirect handled by cuenta page
+      window.location.href = redirectParams || "/cuenta";
     } catch {
       setError("Credenciales inválidas. Por favor intenta de nuevo.");
       setLoading(false);
@@ -83,8 +51,8 @@ export default function LoginForm() {
     setLoading(true);
     setError("");
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      await handleRedirect(result.user.uid);
+      await signInWithPopup(auth, googleProvider);
+      window.location.href = redirectParams || "/cuenta";
     } catch {
       setError("Error al iniciar sesión con Google.");
       setLoading(false);
@@ -122,12 +90,7 @@ export default function LoginForm() {
           disabled={loading}
           className="w-full flex items-center justify-center gap-3 bg-white border border-stone-200 text-nutrisse-charcoal py-3 px-4 rounded-md hover:bg-stone-50 transition mb-6 font-medium"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.65 15.69 16.85 16.9 15.64 17.7V20.45H19.2C21.28 18.53 22.56 15.67 22.56 12.25Z" fill="#4285F4"/>
-            <path d="M12 23C14.97 23 17.46 22.02 19.2 20.45L15.64 17.7C14.7 18.33 13.45 18.7 12 18.7C9.21 18.7 6.84 16.82 5.96 14.29H2.3V17.13C4.08 20.67 7.76 23 12 23Z" fill="#34A853"/>
-            <path d="M5.96 14.29C5.73 13.62 5.6 12.83 5.6 12C5.6 11.17 5.73 10.38 5.96 9.71V6.87H2.3C1.56 8.36 1.14 10.12 1.14 12C1.14 13.88 1.56 15.64 2.3 17.13L5.96 14.29Z" fill="#FBBC05"/>
-            <path d="M12 5.3C13.62 5.3 15.06 5.86 16.2 6.94L19.3 3.84C17.46 2.12 14.97 1.14 12 1.14C7.76 1.14 4.08 3.47 2.3 7.01L5.96 9.85C6.84 7.32 9.21 5.3 12 5.3Z" fill="#EA4335"/>
-          </svg>
+          <GoogleIcon size={20} />
           Continuar con Google
         </button>
 

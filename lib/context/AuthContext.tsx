@@ -5,11 +5,11 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
-export type Role = "client" | "admin" | null;
+import type { Role } from "@/lib/types";
 
 interface AuthContextType {
   currentUser: User | null;
-  userRole: Role;
+  userRole: Role | null;
   loading: boolean;
 }
 
@@ -23,7 +23,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<Role>(null);
+  const [userRole, setUserRole] = useState<Role | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

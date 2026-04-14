@@ -3,14 +3,15 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { db, auth } from "@/lib/firebase";
-import { collection, query, where, getDocs, doc, updateDoc, getDoc, Timestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { Order, Appointment, User as UserType } from "@/lib/types";
+import { formatDate, getStatusBadge } from "@/lib/utils";
 
 export default function AccountPage() {
   const { currentUser, userRole, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<"pedidos" | "citas" | "perfil">("pedidos");
-  
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [profile, setProfile] = useState<UserType | null>(null);
@@ -87,25 +88,6 @@ export default function AccountPage() {
     await signOut(auth);
   };
 
-  const renderStatus = (status: string) => {
-    const maps: Record<string, { label: string, color: string }> = {
-      pending: { label: "Pendiente", color: "bg-yellow-100 text-yellow-800" },
-      confirmed: { label: "Confirmado", color: "bg-blue-100 text-blue-800" },
-      shipped: { label: "Enviado", color: "bg-indigo-100 text-indigo-800" },
-      delivered: { label: "Entregado", color: "bg-green-100 text-green-800" },
-      cancelled: { label: "Cancelado", color: "bg-red-100 text-red-800" },
-    };
-    const s = maps[status] || { label: status, color: "bg-stone-100 text-stone-800" };
-    return <span className={`px-2 py-1 text-xs font-medium rounded-full ${s.color}`}>{s.label}</span>;
-  };
-
-  const parseOrFormatDate = (dateField: unknown) => {
-    if (!dateField) return "Fecha desconocida";
-    if (dateField instanceof Timestamp) return dateField.toDate().toLocaleDateString();
-    if (typeof dateField === "object" && dateField !== null && "toDate" in dateField) return (dateField as { toDate: () => Date }).toDate().toLocaleDateString();
-    return new Date(dateField as string | number).toLocaleDateString();
-  };
-
   return (
     <div className="min-h-screen bg-nutrisse-warmWhite py-12 px-4 md:px-12">
       <div className="max-w-5xl mx-auto">
@@ -114,7 +96,7 @@ export default function AccountPage() {
             <h1 className="font-serif text-4xl font-bold text-nutrisse-charcoal mb-2">Mi Cuenta</h1>
             <p className="text-stone-500">Bienvenido/a, {profile?.displayName || currentUser?.displayName || "Usuario"}</p>
           </div>
-          <button 
+          <button
             onClick={handleLogout}
             className="text-sm text-nutrisse-terracotta border border-nutrisse-terracotta px-4 py-2 rounded hover:bg-nutrisse-terracotta hover:text-white transition"
           >
@@ -125,19 +107,19 @@ export default function AccountPage() {
         <div className="bg-white rounded-lg shadow-sm border border-stone-100 overflow-hidden">
           {/* Tabs */}
           <div className="flex border-b border-stone-100 overflow-x-auto">
-            <button 
+            <button
               onClick={() => setActiveTab("pedidos")}
               className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition ${activeTab === "pedidos" ? "border-nutrisse-sage text-nutrisse-sage" : "border-transparent text-stone-500 hover:text-stone-700"}`}
             >
               Mis Pedidos
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab("citas")}
               className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition ${activeTab === "citas" ? "border-nutrisse-sage text-nutrisse-sage" : "border-transparent text-stone-500 hover:text-stone-700"}`}
             >
               Mis Citas
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab("perfil")}
               className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition ${activeTab === "perfil" ? "border-nutrisse-sage text-nutrisse-sage" : "border-transparent text-stone-500 hover:text-stone-700"}`}
             >
@@ -164,12 +146,15 @@ export default function AccountPage() {
                           <div key={order.id} className="border border-stone-200 rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
                               <p className="font-medium text-nutrisse-charcoal">Pedido #{order.id.slice(-6).toUpperCase()}</p>
-                              <p className="text-sm text-stone-500">{parseOrFormatDate(order.createdAt)}</p>
+                              <p className="text-sm text-stone-500">{formatDate(order.createdAt)}</p>
                               <p className="text-sm text-stone-500 mt-1">{order.items?.length || 0} {(order.items?.length || 0) === 1 ? 'artículo' : 'artículos'}</p>
                             </div>
                             <div className="flex flex-col md:items-end gap-2">
                               <p className="font-bold">Q {(order.total || 0).toFixed(2)}</p>
-                              {renderStatus(order.status)}
+                              {(() => {
+                                const badge = getStatusBadge(order.status);
+                                return <span className={`px-2 py-1 text-xs font-medium rounded-full ${badge.color}`}>{badge.label}</span>;
+                              })()}
                             </div>
                           </div>
                         ))}
@@ -193,7 +178,10 @@ export default function AccountPage() {
                               <p className="text-sm text-stone-500">Fecha: {appt.preferredDate} | Hora: {appt.preferredTime}</p>
                             </div>
                             <div>
-                              {renderStatus(appt.status)}
+                              {(() => {
+                                const badge = getStatusBadge(appt.status);
+                                return <span className={`px-2 py-1 text-xs font-medium rounded-full ${badge.color}`}>{badge.label}</span>;
+                              })()}
                             </div>
                           </div>
                         ))}
@@ -214,7 +202,7 @@ export default function AccountPage() {
                     <form onSubmit={handleUpdateProfile} className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-nutrisse-charcoal mb-1">Nombre Completo</label>
-                        <input 
+                        <input
                           type="text"
                           value={editName}
                           onChange={(e) => setEditName(e.target.value)}
@@ -223,7 +211,7 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-nutrisse-charcoal mb-1">Correo Electrónico (No editable)</label>
-                        <input 
+                        <input
                           type="email"
                           value={profile?.email || currentUser?.email || ""}
                           disabled
@@ -232,7 +220,7 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-nutrisse-charcoal mb-1">Teléfono</label>
-                        <input 
+                        <input
                           type="tel"
                           value={editPhone}
                           onChange={(e) => setEditPhone(e.target.value)}
@@ -240,8 +228,8 @@ export default function AccountPage() {
                           className="w-full px-4 py-2 border border-stone-200 rounded-md focus:ring-2 focus:ring-nutrisse-sage focus:outline-none"
                         />
                       </div>
-                      
-                      <button 
+
+                      <button
                         type="submit"
                         disabled={savingProfile}
                         className="bg-nutrisse-sage text-white py-2 px-6 rounded-md hover:bg-nutrisse-sage/90 transition font-medium mt-4"

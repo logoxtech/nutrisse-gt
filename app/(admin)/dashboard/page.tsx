@@ -8,18 +8,9 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from "recharts";
 import { ShoppingBag, TrendingUp, Clock, Users } from "lucide-react";
+import { ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from "@/lib/utils";
 
-const ORDER_STATUS_COLORS: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  confirmed: "bg-blue-100 text-blue-800",
-  shipped: "bg-indigo-100 text-indigo-800",
-  delivered: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
-};
-const ORDER_STATUS_LABELS: Record<string, string> = {
-  pending: "Pendiente", confirmed: "Confirmado", shipped: "Enviado",
-  delivered: "Entregado", cancelled: "Cancelado",
-};
+
 
 export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<Order[]>([]);
