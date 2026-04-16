@@ -7,9 +7,15 @@ import { collection, query, where, getDocs, doc, updateDoc, getDoc } from "fireb
 import { signOut } from "firebase/auth";
 import { Order, Appointment, User as UserType } from "@/lib/types";
 import { formatDate, getStatusBadge } from "@/lib/utils";
+import Link from "next/link";
+import { ShoppingBag, Calendar, FlaskConical, ShoppingCart, LogOut } from "lucide-react";
+import { useCartStore } from "@/lib/store/cart";
 
 export default function AccountPage() {
   const { currentUser, userRole, loading } = useAuth();
+  const { items } = useCartStore();
+  const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+  
   const [activeTab, setActiveTab] = useState<"pedidos" | "citas" | "perfil">("pedidos");
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -89,20 +95,84 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="min-h-screen bg-nutrisse-warmWhite py-12 px-4 md:px-12">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-          <div>
-            <h1 className="font-serif text-4xl font-bold text-nutrisse-charcoal mb-2">Mi Cuenta</h1>
-            <p className="text-stone-500">Bienvenido/a, {profile?.displayName || currentUser?.displayName || "Usuario"}</p>
+    <div className="min-h-screen bg-nutrisse-warmWhite">
+      {/* Account Navbar */}
+      <nav className="bg-white border-b border-stone-200 py-4 px-4 md:px-12">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <Link href="/" className="font-serif text-xl font-bold text-nutrisse-charcoal hover:text-nutrisse-sage transition">
+            NUTRISSÉ GT
+          </Link>
+          
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-6 text-sm font-medium text-nutrisse-charcoal">
+              <Link href="/tienda" className="hover:text-nutrisse-sage transition">Tienda</Link>
+              <Link href="/agendar" className="hover:text-nutrisse-sage transition">Agendar Cita</Link>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <Link href="/tienda" className="relative text-nutrisse-charcoal hover:text-nutrisse-sage transition">
+                <ShoppingCart size={20} />
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-nutrisse-terracotta text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                    {itemCount}
+                  </span>
+                )}
+              </Link>
+              <button 
+                onClick={handleLogout}
+                className="flex items-center gap-1 text-sm text-nutrisse-terracotta border border-nutrisse-terracotta/20 px-3 py-1.5 rounded-md hover:bg-nutrisse-terracotta hover:text-white transition"
+              >
+                <LogOut size={16} />
+                <span className="hidden sm:inline">Cerrar Sesión</span>
+              </button>
+            </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-nutrisse-terracotta border border-nutrisse-terracotta px-4 py-2 rounded hover:bg-nutrisse-terracotta hover:text-white transition"
-          >
-            Cerrar Sesión
-          </button>
         </div>
+      </nav>
+
+      <div className="py-12 px-4 md:px-12">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-10">
+            <h1 className="font-serif text-4xl font-bold text-nutrisse-charcoal mb-2">Mi Cuenta</h1>
+            <p className="text-stone-500 text-lg">Bienvenido/a, {profile?.displayName || currentUser?.displayName || "Usuario"}</p>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+            {/* Tienda */}
+            <Link href="/tienda" className="group bg-white p-6 rounded-lg border border-stone-100 shadow-sm hover:shadow-md transition flex items-center gap-4">
+              <div className="w-12 h-12 bg-nutrisse-sage/10 text-nutrisse-sage rounded-full flex items-center justify-center group-hover:bg-nutrisse-sage group-hover:text-white transition-colors">
+                <ShoppingBag size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-nutrisse-charcoal group-hover:text-nutrisse-sage transition-colors">Explorar Tienda</h3>
+                <p className="text-sm text-stone-500">Descubre nuestros productos</p>
+              </div>
+            </Link>
+
+            {/* Agendar */}
+            <Link href="/agendar" className="group bg-white p-6 rounded-lg border border-stone-100 shadow-sm hover:shadow-md transition flex items-center gap-4">
+              <div className="w-12 h-12 bg-nutrisse-terracotta/10 text-nutrisse-terracotta rounded-full flex items-center justify-center group-hover:bg-nutrisse-terracotta group-hover:text-white transition-colors">
+                <Calendar size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-nutrisse-charcoal group-hover:text-nutrisse-terracotta transition-colors">Agendar una Cita</h3>
+                <p className="text-sm text-stone-500">Reserva tu consulta</p>
+              </div>
+            </Link>
+
+            {/* Test Epigenético */}
+            <Link href="/epigenetic-test" className="group bg-white p-6 rounded-lg border border-stone-100 shadow-sm hover:shadow-md transition flex items-center gap-4">
+              <div className="w-12 h-12 bg-nutrisse-sage/10 text-nutrisse-sage rounded-full flex items-center justify-center group-hover:bg-nutrisse-sage group-hover:text-white transition-colors">
+                <FlaskConical size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-nutrisse-charcoal group-hover:text-nutrisse-sage transition-colors">Test Epigenético</h3>
+                <p className="text-sm text-stone-500">Conoce tu perfil genético</p>
+              </div>
+            </Link>
+          </div>
+
 
         <div className="bg-white rounded-lg shadow-sm border border-stone-100 overflow-hidden">
           {/* Tabs */}
@@ -244,6 +314,7 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -1,12 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu } from "lucide-react";
+import { ShoppingCart, Menu, UserCircle } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
+import { useAuth } from "@/lib/context/AuthContext";
 
 export default function Navbar() {
   const { items, setIsOpen } = useCartStore();
+  const { currentUser, userRole } = useAuth();
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+
+  const firstName = currentUser?.displayName?.split(" ")[0] || "Cuenta";
+  const accountLink = userRole === "admin" ? "/dashboard" : "/cuenta";
 
   return (
     <header className="w-full py-6 px-4 md:px-12 flex items-center justify-between bg-nutrisse-warmWhite/80 backdrop-blur-md sticky top-0 z-50 border-b border-stone-200/50">
@@ -39,6 +44,26 @@ export default function Navbar() {
             </span>
           )}
         </button>
+
+        {/* Account / Login */}
+        <div className="hidden md:flex">
+          {currentUser ? (
+            <Link 
+              href={accountLink}
+              className="flex items-center gap-2 text-sm font-medium text-nutrisse-charcoal hover:text-nutrisse-sage transition"
+            >
+              <UserCircle size={20} />
+              <span>{firstName}</span>
+            </Link>
+          ) : (
+            <Link 
+              href="/login"
+              className="text-sm font-medium text-nutrisse-charcoal hover:text-nutrisse-sage transition"
+            >
+              Iniciar Sesión
+            </Link>
+          )}
+        </div>
         
         <div className="hidden md:flex flex-shrink-0">
           <Link href="/agendar" className="bg-nutrisse-sage text-white px-6 py-3 rounded-md hover:bg-nutrisse-sage/90 transition text-sm font-medium tracking-wide">
@@ -51,5 +76,6 @@ export default function Navbar() {
         </button>
       </div>
     </header>
+
   );
 }
