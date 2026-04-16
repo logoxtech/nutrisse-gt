@@ -29,7 +29,7 @@ export default function Navbar() {
         <Link href="/services" className="hover:text-nutrisse-sage transition">Servicios</Link>
         <Link href="/epigenetic-test" className="hover:text-nutrisse-sage transition">Test Epigenético</Link>
         <Link href="/tienda" className="hover:text-nutrisse-sage transition">Tienda</Link>
-        <Link href="/about" className="hover:text-nutrisse-sage transition">Sobre mí</Link>
+        <Link href="/sobre-mi" className="hover:text-nutrisse-sage transition">Sobre mí</Link>
       </nav>
       
       <div className="flex items-center gap-4">
