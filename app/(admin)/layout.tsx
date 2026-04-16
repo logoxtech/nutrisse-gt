@@ -21,15 +21,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [currentUser, userRole, loading, router]);
 
-  if (loading) {
+  if (loading || !currentUser || userRole !== 'admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <div className="w-12 h-12 border-4 border-nutrisse-sage border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex h-screen bg-stone-100">
+        <div className="hidden lg:block w-56 bg-white border-r border-stone-200 animate-pulse" />
+        <div className="flex-1 p-8">
+          <div className="h-8 bg-stone-200 rounded w-48 mb-8 animate-pulse" />
+          <div className="grid grid-cols-4 gap-6 mb-8">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="h-32 bg-stone-200 rounded-xl animate-pulse" />
+            ))}
+          </div>
+          <div className="h-64 bg-stone-200 rounded-xl animate-pulse" />
+        </div>
       </div>
     );
   }
-
-  if (!currentUser || userRole !== "admin") return null;
 
   return (
     <div className="flex h-screen bg-stone-100 overflow-hidden">

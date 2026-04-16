@@ -23,7 +23,12 @@ export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<Role | null>(null);
+  const [userRole, setUserRole] = useState<Role | null>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('userRole') as Role) || null;
+    }
+    return null;
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -34,17 +39,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           const userDocRef = doc(db, "users", user.uid);
           const userDoc = await getDoc(userDocRef);
-          if (userDoc.exists()) {
-            setUserRole(userDoc.data().role as Role);
-          } else {
-            setUserRole("client");
-          }
+          const role = userDoc.exists() 
+            ? userDoc.data().role as Role 
+            : 'client';
+          setUserRole(role);
+          localStorage.setItem('userRole', role);
         } catch (error) {
           console.error("Error fetching user role:", error);
           setUserRole(null);
+          localStorage.removeItem('userRole');
         }
       } else {
         setUserRole(null);
+        localStorage.removeItem('userRole');
       }
       
       setLoading(false);

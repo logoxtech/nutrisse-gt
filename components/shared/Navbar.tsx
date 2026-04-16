@@ -25,11 +25,11 @@ export default function Navbar() {
       </div>
       
       <nav className="hidden md:flex align-middle justify-center gap-8 text-sm font-medium uppercase tracking-widest text-nutrisse-charcoal">
-        <Link href="/" className="hover:text-nutrisse-sage transition">Inicio</Link>
-        <Link href="/services" className="hover:text-nutrisse-sage transition">Servicios</Link>
-        <Link href="/epigenetic-test" className="hover:text-nutrisse-sage transition">Test Epigenético</Link>
-        <Link href="/tienda" className="hover:text-nutrisse-sage transition">Tienda</Link>
-        <Link href="/sobre-mi" className="hover:text-nutrisse-sage transition">Sobre mí</Link>
+        <Link href="/" prefetch={true} className="hover:text-nutrisse-sage transition">Inicio</Link>
+        <Link href="/services" prefetch={true} className="hover:text-nutrisse-sage transition">Servicios</Link>
+        <Link href="/epigenetic-test" prefetch={true} className="hover:text-nutrisse-sage transition">Test Epigenético</Link>
+        <Link href="/tienda" prefetch={true} className="hover:text-nutrisse-sage transition">Tienda</Link>
+        <Link href="/sobre-mi" prefetch={true} className="hover:text-nutrisse-sage transition">Sobre mí</Link>
       </nav>
       
       <div className="flex items-center gap-4">
@@ -66,7 +66,7 @@ export default function Navbar() {
         </div>
         
         <div className="hidden md:flex flex-shrink-0">
-          <Link href="/agendar" className="bg-nutrisse-sage text-white px-6 py-3 rounded-md hover:bg-nutrisse-sage/90 transition text-sm font-medium tracking-wide">
+          <Link href="/agendar" prefetch={true} className="bg-nutrisse-sage text-white px-6 py-3 rounded-md hover:bg-nutrisse-sage/90 transition text-sm font-medium tracking-wide">
             Agenda tu Cita
           </Link>
         </div>
