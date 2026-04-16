@@ -1,114 +1,97 @@
 # Nutrissé GT — Plataforma Web
 
-> Plataforma de nutrición funcional con tienda en línea, agendamiento de citas y panel de administración.
+Plataforma digital de nutrición funcional con tienda en línea, 
+agendamiento de citas y panel de administración.
+
+Desarrollado por **[Logox](https://logox.tech)**
 
 ---
 
-## Stack Tecnológico
+## Stack
 
 | Capa | Tecnología |
 |---|---|
-| Framework | Next.js 14 (App Router) |
+| Framework | Next.js 14 (App Router, Static Export) |
 | Lenguaje | TypeScript |
 | Estilos | Tailwind CSS |
 | Backend / Auth | Firebase (Auth + Firestore + Storage) |
 | Estado del carrito | Zustand |
 | Formularios | React Hook Form + Zod |
-| Gráficas (admin) | Recharts |
-| Pagos (fase 2) | Stripe |
+| Gráficas | Recharts |
 | Íconos | Lucide React |
+| Pagos (Fase 2) | Stripe |
+| CI/CD | GitHub Actions → Firebase Hosting |
 
 ---
 
-## Desarrollado por
+## Rutas
 
-**Logox** — Diseño y Desarrollo Web  
-🌐 [logox.tech](https://logox.tech)
+| Ruta | Descripción |
+|---|---|
+| / | Landing page |
+| /servicios | Página de servicios |
+| /test-epigenetico | Test epigenético |
+| /tienda | Tienda de productos |
+| /tienda/[slug] | Detalle de producto |
+| /agendar | Formulario de citas (MVP) |
+| /login | Inicio de sesión |
+| /registro | Registro de usuario |
+| /cuenta | Dashboard del cliente |
+| /dashboard | Panel admin — resumen |
+| /pedidos | Panel admin — pedidos |
+| /productos | Panel admin — productos |
+| /categorias | Panel admin — categorías |
+| /citas | Panel admin — citas |
+| /inventario | Panel admin — inventario |
 
 ---
 
-## Instrucciones de Instalación
-
-### 1. Clonar el repositorio
+## Setup local
 
 ```bash
-git clone https://github.com/TU_USUARIO/nutrisse-gt.git
+git clone https://github.com/logoxtech/nutrisse-gt.git
 cd nutrisse-gt
-```
-
-### 2. Instalar dependencias
-
-```bash
 npm install
-```
-
-### 3. Configurar variables de entorno
-
-```bash
 cp .env.local.example .env.local
-```
-
-Luego abre `.env.local` y rellena con tus credenciales reales de Firebase:
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=tu_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=tu_proyecto.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=tu_proyecto
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=tu_proyecto.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=tu_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=tu_app_id
-```
-
-### 4. Iniciar servidor de desarrollo
-
-```bash
+# Fill in .env.local with real Firebase credentials
 npm run dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
-
 ---
 
-## Estructura de Rutas
+## Variables de entorno
+
+Copiar .env.local.example y completar con las credenciales 
+reales del proyecto nutrisse-gt en Firebase Console →
+Project Settings → Your apps → SDK config.
 
 ```
-/                  → Landing page pública
-/tienda            → Tienda de productos
-/tienda/[slug]     → Detalle de producto
-/agendar           → Formulario de citas (MVP)
-/login             → Inicio de sesión
-/registro          → Registro de usuario
-/cuenta            → Dashboard del cliente (requiere login)
-/dashboard         → Panel admin — Dashboard (requiere rol admin)
-/pedidos           → Panel admin — Pedidos
-/productos         → Panel admin — Productos
-/categorias        → Panel admin — Categorías
-/citas             → Panel admin — Citas
-/inventario        → Panel admin — Inventario
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
 ```
 
 ---
 
 ## Deploy
 
-El proyecto se despliega automáticamente a **Firebase Hosting** al hacer push a la rama `main` mediante GitHub Actions.
+Auto-deploy a Firebase Hosting en cada push a main 
+vía GitHub Actions.
 
-### Configuración del secreto en GitHub
-
-1. Ejecuta en tu terminal (con Firebase CLI instalado):
-   ```bash
-   firebase login:ci
-   ```
-2. Copia el token generado.
-3. Ve a tu repositorio en GitHub → **Settings → Secrets and variables → Actions**.
-4. Crea un nuevo secreto llamado `FIREBASE_TOKEN` y pega el token.
-
-El workflow `.github/workflows/deploy.yml` se encarga del resto.
+Requiere los siguientes secrets en el repositorio GitHub:
+- Todas las variables NEXT_PUBLIC_FIREBASE_* 
+- FIREBASE_SERVICE_ACCOUNT_NUTRISSE_GT
 
 ---
 
-## Fases del Proyecto
+## Fases del proyecto
 
-- ✅ **Fase 1 (MVP):** Landing page, tienda, citas (form manual), auth Firebase, panel admin
-- 🔲 **Fase 2:** Integración Stripe (pagos), Google Calendar vía n8n (citas automáticas)
-- 🔲 **Fase 3:** App móvil, análisis epigenético interactivo
+- ✅ Fase 1 (MVP): Landing, servicios, test epigenético, 
+  tienda, citas (form manual), auth, panel admin
+- 🔲 Fase 2: Stripe (pagos), Google Calendar vía n8n, 
+  FEL Guatemala (SAT)
+- 🔲 Fase 3: Omnichannel (FB/IG/WhatsApp → Tiledesk → n8n)
