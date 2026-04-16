@@ -26,7 +26,7 @@ export default function LandingPage() {
               </Link>
             </div>
           </div>
-          <div className="flex-1 w-full h-[600px] relative rounded-t-full overflow-hidden bg-stone-200 flex items-center justify-center border-4 border-white shadow-xl">
+          <div className="flex-1 w-full max-w-[60vw] mx-auto aspect-[3/4] md:max-w-none md:aspect-auto md:w-full md:h-[600px] relative rounded-t-full overflow-hidden bg-stone-200 flex items-center justify-center border-4 border-white shadow-xl">
              {/* // TODO: Replace placeholder with professional headshot — portrait orientation, warm background preferred */}
              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center text-stone-500">
                <Camera size={48} className="mb-4 opacity-50" />

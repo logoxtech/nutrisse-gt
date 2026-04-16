@@ -99,7 +99,7 @@ export default function RegisterForm() {
 
   return (
     <div className="min-h-screen bg-nutrisse-warmWhite flex items-center justify-center p-4">
-      <div className="bg-white max-w-md w-full p-8 rounded-lg shadow-sm border border-stone-100">
+      <div className="bg-white max-w-md w-full px-4 py-8 md:p-8 rounded-lg shadow-sm border border-stone-100">
         <div className="flex justify-center mb-6">
           <Link href="/" className="flex items-center gap-2 font-serif text-2xl font-bold text-nutrisse-charcoal tracking-wide hover:text-nutrisse-sage transition">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-nutrisse-sage fill-current">

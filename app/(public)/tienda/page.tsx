@@ -54,27 +54,27 @@ export default function TiendaPage() {
         
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Sidebar */}
-          <aside className="lg:w-64 flex-shrink-0">
-            <h2 className="font-bold text-lg mb-4 text-nutrisse-charcoal">Categorías</h2>
+          <aside className="w-full lg:w-64 flex-shrink-0 mb-6 lg:mb-0">
+            <h2 className="font-bold text-lg mb-4 text-nutrisse-charcoal hidden lg:block">Categorías</h2>
             {loading && categories.length === 0 ? (
-              <div className="space-y-3">
-                {[1, 2, 3].map(i => <div key={i} className="h-6 bg-stone-200 animate-pulse rounded w-3/4"></div>)}
+              <div className="flex lg:flex-col gap-3 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
+                {[1, 2, 3].map(i => <div key={i} className="h-10 lg:h-6 w-24 lg:w-3/4 flex-shrink-0 bg-stone-200 animate-pulse rounded-full lg:rounded"></div>)}
               </div>
             ) : (
-              <ul className="space-y-2">
-                <li>
+              <ul className="flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
+                <li className="flex-shrink-0">
                   <button 
                     onClick={() => setActiveCategory(null)}
-                    className={`block w-full text-left px-3 py-2 rounded-md transition ${activeCategory === null ? 'bg-nutrisse-sage/10 text-nutrisse-sage font-medium' : 'text-stone-600 hover:bg-stone-100'}`}
+                    className={`block w-full text-center lg:text-left px-4 py-2 lg:px-3 lg:py-2 rounded-full lg:rounded-md transition whitespace-nowrap ${activeCategory === null ? 'bg-nutrisse-sage text-white lg:bg-nutrisse-sage/10 lg:text-nutrisse-sage font-medium' : 'bg-white lg:bg-transparent border border-stone-200 lg:border-transparent text-stone-600 hover:bg-stone-50 lg:hover:bg-stone-100'}`}
                   >
-                    Todos los productos
+                    Todos
                   </button>
                 </li>
                 {categories.map((cat) => (
-                  <li key={cat.id}>
+                  <li key={cat.id} className="flex-shrink-0">
                     <button 
                       onClick={() => setActiveCategory(cat.id)}
-                      className={`block w-full text-left px-3 py-2 rounded-md transition ${activeCategory === cat.id ? 'bg-nutrisse-sage/10 text-nutrisse-sage font-medium' : 'text-stone-600 hover:bg-stone-100'}`}
+                      className={`block w-full text-center lg:text-left px-4 py-2 lg:px-3 lg:py-2 rounded-full lg:rounded-md transition whitespace-nowrap ${activeCategory === cat.id ? 'bg-nutrisse-sage text-white lg:bg-nutrisse-sage/10 lg:text-nutrisse-sage font-medium' : 'bg-white lg:bg-transparent border border-stone-200 lg:border-transparent text-stone-600 hover:bg-stone-50 lg:hover:bg-stone-100'}`}
                     >
                       {cat.name}
                     </button>
