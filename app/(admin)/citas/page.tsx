@@ -44,7 +44,7 @@ export default function CitasPage() {
       <h1 className="text-2xl font-bold text-stone-800">Citas</h1>
 
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-stone-50 text-stone-500 uppercase text-xs tracking-wider">
               <tr>
@@ -91,6 +91,37 @@ export default function CitasPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="lg:hidden divide-y divide-stone-100">
+          {loading ? (
+            <div className="p-8 flex justify-center"><div className="w-6 h-6 border-4 border-nutrisse-sage border-t-transparent rounded-full animate-spin" /></div>
+          ) : appointments.length === 0 ? (
+            <div className="p-8 text-center text-stone-400">No hay citas registradas</div>
+          ) : appointments.map(appt => (
+            <div key={appt.id} className="p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-stone-700 text-sm">{appt.name}</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[appt.status] || "bg-stone-100 text-stone-600"}`}>
+                  {STATUS_LABELS[appt.status] || appt.status}
+                </span>
+              </div>
+              <p className="text-xs text-stone-500 font-medium">{appt.service}</p>
+              <div className="flex items-center justify-between text-xs text-stone-400">
+                <span>{appt.preferredDate} - {appt.preferredTime}</span>
+              </div>
+              <div className="pt-2 border-t border-stone-50 mt-2">
+                <select
+                  value={appt.status}
+                  disabled={updating === appt.id}
+                  onChange={e => handleStatusChange(appt.id, e.target.value)}
+                  className="w-full text-xs bg-stone-50 border border-stone-200 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-nutrisse-sage"
+                >
+                  {Object.keys(STATUS_LABELS).map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+                </select>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -190,13 +190,13 @@ export default function ProductFormClient() {
 
         <div className="bg-white rounded-xl shadow-sm border border-stone-100 p-6 space-y-5">
           <h2 className="font-semibold text-stone-700 border-b border-stone-100 pb-3">Precio e Inventario</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-1">Precio (GTQ) *</label>
               <input type="number" step="0.01" {...register("price")} className="w-full px-4 py-2 border border-stone-200 rounded-lg bg-stone-50 focus:ring-2 focus:ring-nutrisse-sage focus:outline-none"/>
               {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>}
             </div>
-            <div>
+            <div className="col-span-2 md:col-span-1">
               <label className="block text-sm font-medium text-stone-700 mb-1">Precio Comparativo</label>
               <input type="number" step="0.01" {...register("comparePrice")} className="w-full px-4 py-2 border border-stone-200 rounded-lg bg-stone-50 focus:ring-2 focus:ring-nutrisse-sage focus:outline-none"/>
             </div>
@@ -232,7 +232,7 @@ export default function ProductFormClient() {
             onDragOver={e => { e.preventDefault(); setDragging(true); }}
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-xl p-8 text-center transition cursor-pointer ${dragging ? "border-nutrisse-sage bg-nutrisse-sage/5" : "border-stone-200 hover:border-stone-300"}`}
+            className={`border-2 border-dashed rounded-xl p-8 text-center transition cursor-pointer active:bg-stone-50 ${dragging ? "border-nutrisse-sage bg-nutrisse-sage/5" : "border-stone-200 hover:border-stone-300"}`}
             onClick={() => document.getElementById("image-upload")?.click()}
           >
             <input id="image-upload" type="file" accept="image/*" multiple className="hidden"
@@ -245,7 +245,10 @@ export default function ProductFormClient() {
             ) : (
               <div className="flex flex-col items-center gap-3 text-stone-400">
                 <UploadCloud size={32}/>
-                <p className="text-sm">Arrastra imágenes o <span className="text-nutrisse-sage underline">haz clic para seleccionar</span></p>
+                <p className="text-sm">
+                  <span className="md:hidden">Toca para seleccionar imágenes</span>
+                  <span className="hidden md:inline">Arrastra imágenes o <span className="text-nutrisse-sage underline">haz clic para seleccionar</span></span>
+                </p>
                 <p className="text-xs">{images.length}/5 imágenes subidas</p>
               </div>
             )}
@@ -269,11 +272,11 @@ export default function ProductFormClient() {
           )}
         </div>
 
-        <div className="flex justify-end gap-4">
-          <Link href="/productos" className="px-6 py-2 border border-stone-200 text-stone-600 rounded-lg hover:bg-stone-50 transition font-medium">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+          <Link href="/productos" className="w-full sm:w-auto px-6 py-2 border border-stone-200 text-stone-600 rounded-lg hover:bg-stone-50 transition font-medium text-center">
             Cancelar
           </Link>
-          <button type="submit" disabled={saving} className="px-6 py-2 bg-nutrisse-sage text-white rounded-lg hover:bg-nutrisse-sage/90 transition font-medium disabled:opacity-60">
+          <button type="submit" disabled={saving} className="w-full sm:w-auto px-6 py-2 bg-nutrisse-sage text-white rounded-lg hover:bg-nutrisse-sage/90 transition font-medium disabled:opacity-60">
             {saving ? "Guardando..." : isNew ? "Crear Producto" : "Guardar Cambios"}
           </button>
         </div>

@@ -73,7 +73,7 @@ export default function PedidosPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-stone-50 text-stone-500 uppercase text-xs tracking-wider">
               <tr>
@@ -120,6 +120,28 @@ export default function PedidosPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="lg:hidden divide-y divide-stone-100">
+          {loading ? (
+            <div className="p-8 flex justify-center"><div className="w-6 h-6 border-4 border-nutrisse-sage border-t-transparent rounded-full animate-spin" /></div>
+          ) : filtered.length === 0 ? (
+            <div className="p-8 text-center text-stone-400">Sin pedidos</div>
+          ) : filtered.map(order => (
+            <div key={order.id} className="p-4 space-y-1 cursor-pointer" onClick={() => setSelectedOrder(order)}>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs text-stone-500">#{order.id.slice(-6).toUpperCase()}</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[order.status] || "bg-stone-100 text-stone-600"}`}>
+                  {STATUS_LABELS[order.status] || order.status}
+                </span>
+              </div>
+              <p className="font-medium text-stone-700 text-sm">{order.userName}</p>
+              <div className="flex items-center justify-between mt-1">
+                <span className="text-xs text-stone-400">{order.createdAt?.toDate?.()?.toLocaleDateString() || "—"}</span>
+                <span className="font-medium text-sm">Q {(order.total || 0).toFixed(2)}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

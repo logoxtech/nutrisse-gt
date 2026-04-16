@@ -51,7 +51,7 @@ export default function ProductosPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-stone-50 text-stone-500 uppercase text-xs tracking-wider">
               <tr>
@@ -108,6 +108,63 @@ export default function ProductosPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile card list — hidden on desktop */}
+        <div className="lg:hidden divide-y divide-stone-100">
+          {loading ? (
+            <div className="p-8 flex justify-center">
+              <div className="w-6 h-6 border-4 border-nutrisse-sage border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : products.length === 0 ? (
+            <div className="p-8 text-center text-stone-400">
+              No hay productos.{" "}
+              <Link href="/productos/nuevo" className="text-nutrisse-sage underline">
+                Crea el primero
+              </Link>.
+            </div>
+          ) : products.map(product => (
+            <div key={product.id} className="p-4 flex items-center gap-4">
+              {/* Thumbnail */}
+              <div className="w-14 h-14 rounded-lg overflow-hidden bg-stone-100 flex-shrink-0 relative flex items-center justify-center">
+                {product.images?.[0] ? (
+                  <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
+                ) : (
+                  <Camera size={18} className="text-stone-300" />
+                )}
+              </div>
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-stone-700 truncate">
+                  {product.name}
+                </p>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  {getCategoryName(product.categoryId)}
+                </p>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-sm font-medium text-stone-700">
+                    Q {product.price.toFixed(2)}
+                  </span>
+                  <span className={`text-xs font-medium ${product.stock === 0 ? "text-red-500" : product.stock <= 5 ? "text-yellow-600" : "text-stone-500"}`}>
+                    Stock: {product.stock}
+                  </span>
+                </div>
+              </div>
+              {/* Actions */}
+              <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                <button
+                  onClick={() => handleToggleActive(product)}
+                  disabled={togglingId === product.id}
+                  className={`w-10 h-5 rounded-full transition-colors relative ${product.active ? "bg-nutrisse-sage" : "bg-stone-300"}`}
+                >
+                  <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${product.active ? "left-5" : "left-0.5"}`} />
+                </button>
+                <Link href={`/productos/${product.id}`} className="flex items-center gap-1 text-xs text-nutrisse-sage">
+                  <Edit size={13} /> Editar
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

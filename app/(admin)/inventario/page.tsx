@@ -53,7 +53,7 @@ export default function InventarioPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-stone-50 text-stone-500 uppercase text-xs tracking-wider">
               <tr>
@@ -140,6 +140,50 @@ export default function InventarioPage() {
               })}
             </tbody>
           </table>
+        </div>
+
+        <div className="lg:hidden divide-y divide-stone-100">
+          {loading ? (
+            <div className="p-8 flex justify-center"><div className="w-6 h-6 border-4 border-nutrisse-sage border-t-transparent rounded-full animate-spin" /></div>
+          ) : items.length === 0 ? (
+            <div className="p-8 text-center text-stone-400">No hay productos</div>
+          ) : items.map(item => {
+            const isOutOfStock = item.stock === 0;
+            const isLowStock = item.stock > 0 && item.stock <= 5;
+            return (
+              <div key={item.id} className={`p-4 space-y-3 transition ${isOutOfStock ? "bg-red-50" : isLowStock ? "bg-yellow-50" : ""}`}>
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      {(isOutOfStock || isLowStock) && <AlertTriangle size={14} className={isOutOfStock ? "text-red-500" : "text-yellow-600"} />}
+                      <p className="font-medium text-stone-700 text-sm leading-tight">{item.name}</p>
+                    </div>
+                    {isOutOfStock && <span className="text-xs font-semibold text-red-500 mt-0.5 block">Fuera de stock</span>}
+                  </div>
+                  <span className={`font-bold text-lg leading-none ${isOutOfStock ? "text-red-500" : isLowStock ? "text-yellow-600" : "text-stone-700"}`}>
+                    {item.stock}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between border-t border-stone-200/50 pt-3">
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => handleAdjust(item.id, -1)} className="w-8 h-8 flex items-center justify-center bg-white border border-stone-200 hover:bg-stone-50 rounded shadow-sm text-stone-600 transition"><Minus size={14}/></button>
+                    <input type="number" value={item.adjustment} onChange={e => handleSetAdjustment(item.id, parseInt(e.target.value) || 0)} className="w-14 text-center border border-stone-200 rounded py-1.5 text-sm focus:ring-2 focus:ring-nutrisse-sage focus:outline-none bg-white"/>
+                    <button onClick={() => handleAdjust(item.id, 1)} className="w-8 h-8 flex items-center justify-center bg-white border border-stone-200 hover:bg-stone-50 rounded shadow-sm text-stone-600 transition"><Plus size={14}/></button>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleSave(item)}
+                    disabled={item.adjustment === 0 || saving === item.id}
+                    className="flex items-center gap-1.5 text-xs bg-nutrisse-sage text-white px-3 py-1.5 rounded disabled:opacity-40"
+                  >
+                    {saving === item.id ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"/> : <Save size={13}/>}
+                    Guardar
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

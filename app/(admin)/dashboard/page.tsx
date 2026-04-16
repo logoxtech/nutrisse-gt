@@ -154,7 +154,7 @@ export default function AdminDashboardPage() {
         <div className="px-6 py-4 border-b border-stone-100">
           <h2 className="font-semibold text-stone-700">Pedidos Recientes</h2>
         </div>
-        <div className="overflow-x-auto">
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-stone-50 text-stone-500 uppercase text-xs tracking-wider">
               <tr>
@@ -181,6 +181,37 @@ export default function AdminDashboardPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile card list — hidden on desktop */}
+        <div className="lg:hidden divide-y divide-stone-100">
+          {recentOrders.length === 0 ? (
+            <p className="p-6 text-center text-stone-400 text-sm">
+              Sin pedidos
+            </p>
+          ) : recentOrders.map(order => (
+            <div key={order.id} className="p-4 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs text-stone-500">
+                  #{order.id.slice(-6).toUpperCase()}
+                </span>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ORDER_STATUS_COLORS[order.status] || "bg-stone-100 text-stone-600"}`}>
+                  {ORDER_STATUS_LABELS[order.status] || order.status}
+                </span>
+              </div>
+              <p className="font-medium text-stone-700 text-sm">
+                {order.userName}
+              </p>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-stone-400">
+                  {order.createdAt?.toDate?.()?.toLocaleDateString() || "—"}
+                </span>
+                <span className="font-medium text-sm">
+                  Q {(order.total || 0).toFixed(2)}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

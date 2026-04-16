@@ -108,7 +108,7 @@ export default function CategoriasPage() {
                 ) : (
                   <span className="flex-1 font-medium text-stone-700">{cat.name}</span>
                 )}
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                <div className="flex items-center gap-1 lg:opacity-0 lg:group-hover:opacity-100 transition">
                   {editingId === cat.id ? (
                     <>
                       <button onClick={() => handleSaveEdit(cat.id)} className="p-1.5 text-green-600 hover:bg-green-50 rounded"><Check size={15}/></button>
